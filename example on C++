@@ -1,0 +1,40 @@
+#include <iostream>
+#include <vector>
+#include <limits.h>
+
+using namespace std;
+
+int tsp(int currentCity, vector<bool>& visited, int count, int cost, const vector<vector<int>>& distanceMatrix) {
+    int numberOfCities = distanceMatrix.size();
+    if (count == numberOfCities) {
+        return cost + distanceMatrix[currentCity][0]; // Возвращаемся в стартовый город
+    }
+
+    int minCost = INT_MAX;
+
+    for (int i = 0; i < numberOfCities; i++) {
+        if (!visited[i]) {
+            visited[i] = true;
+            minCost = min(minCost, tsp(i, visited, count + 1, cost + distanceMatrix[currentCity][i], distanceMatrix));
+            visited[i] = false; // Backtrack
+        }
+    }
+    return minCost;
+}
+
+int main() {
+    vector<vector<int>> distanceMatrix = {
+        {0, 10, 15, 20},
+        {10, 0, 35, 25},
+        {15, 35, 0, 30},
+        {20, 25, 30, 0}
+    };
+
+    vector<bool> visited(distanceMatrix.size(), false);
+    visited[0] = true; // Начинаем с первого города
+    int minCost = tsp(0, visited, 1, 0, distanceMatrix);
+
+    cout << "Минимальная стоимость маршрута: " << minCost << endl;
+
+    return 0;
+}
