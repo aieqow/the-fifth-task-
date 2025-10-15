@@ -1,0 +1,39 @@
+import java.util.Arrays;
+
+public class TravelingSalesman {
+    static int numberOfCities;
+    static int[][] distanceMatrix;
+
+    public static void main(String[] args) {
+        distanceMatrix = new int[][] {
+            {0, 10, 15, 20},
+            {10, 0, 35, 25},
+            {15, 35, 0, 30},
+            {20, 25, 30, 0}
+        };
+        numberOfCities = distanceMatrix.length;
+        
+        boolean[] visited = new boolean[numberOfCities];
+        visited[0] = true; // Начинаем с первого города
+        int minCost = tsp(0, visited, 1, 0);
+        
+        System.out.println("Минимальная стоимость маршрута: " + minCost);
+    }
+
+    static int tsp(int currentCity, boolean[] visited, int count, int cost) {
+        if (count == numberOfCities) {
+            return cost + distanceMatrix[currentCity][0]; // Возвращаемся в стартовый город
+        }
+
+        int minCost = Integer.MAX_VALUE;
+
+        for (int i = 0; i < numberOfCities; i++) {
+            if (!visited[i]) {
+                visited[i] = true;
+                minCost = Math.min(minCost, tsp(i, visited, count + 1, cost + distanceMatrix[currentCity][i]));
+                visited[i] = false; // Backtrack
+            }
+        }
+        return minCost;
+    }
+}
